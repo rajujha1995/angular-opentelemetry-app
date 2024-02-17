@@ -1,4 +1,8 @@
+// src/app/app.component.ts
+
 import { Component } from '@angular/core';
+import { TracingService } from './tracing.service';
+import { Tracer } from '@opentelemetry/tracing';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +10,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'angular-opentelemetry-app';
+  private tracer: Tracer;
+
+  constructor(private tracingService: TracingService) {
+    this.tracer = this.tracingService.getTracer('app-component');
+  }
+
+  ngOnInit() {
+    // Start a span
+    const span = this.tracer.startSpan('AppComponentInitialization');
+    
+    // Your component initialization code here
+    
+    // End the span
+    span.end();
+  }
 }
